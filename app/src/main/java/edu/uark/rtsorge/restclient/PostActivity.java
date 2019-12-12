@@ -7,10 +7,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -24,6 +28,8 @@ public class PostActivity extends AppCompatActivity {
     TextView textView;
     TextView userNameTextView;
     ListView listView;
+    Button commentButton;
+    int postId;
 
     JsonPlaceHolderApi jsonPlaceHolderApi;
 
@@ -34,6 +40,7 @@ public class PostActivity extends AppCompatActivity {
         textView = findViewById(R.id.actualPost);
         listView = findViewById(R.id.listview2);
         userNameTextView = findViewById(R.id.textView4);
+        commentButton = findViewById(R.id.commentButton);
         final int position;
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -58,6 +65,15 @@ public class PostActivity extends AppCompatActivity {
 
             }
         });
+
+        commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent commentIntent = new Intent(getBaseContext(), CommentOnPost.class);
+                commentIntent.putExtra("POSITION", position);
+                startActivityForResult(commentIntent, 1);
+            }
+        });
     }
 
     private void getPost(final int position) {
@@ -71,6 +87,7 @@ public class PostActivity extends AppCompatActivity {
                 }
 
                 List<Post> posts = response.body();
+                postId = posts.get(position).getId();
                 String content = "";
                 content += "Post Title: " + posts.get(position).getTitle() + "\n\n";
                 content += "Post Body: " + posts.get(position).getText() + "\n";
@@ -80,6 +97,7 @@ public class PostActivity extends AppCompatActivity {
                 getUser(posts.get(position).getUserId());
                 Log.e("After", "after get user gets called");
                 getComments(posts.get(position).getId());
+
             }
 
             @Override
@@ -101,11 +119,9 @@ public class PostActivity extends AppCompatActivity {
                 }
                 List<User> users = response.body();
                 Log.e("getUserOnResponse", "got it");
-                for(int i = 0; i < users.size(); i++)
-                {
+                for (int i = 0; i < users.size(); i++) {
                     Log.e("in loop", String.valueOf(i) + " userId: " + users.get(i).getId());
-                    if(userId == users.get(i).getId())
-                    {
+                    if (userId == users.get(i).getId()) {
                         userNameTextView.setText(users.get(i).getName());
                         Log.e("Name", users.get(i).getName());
                         break;
@@ -121,16 +137,14 @@ public class PostActivity extends AppCompatActivity {
 
     }
 
-    private void getComments(final int postId)
-    {
+    private void getComments(final int postId) {
         Call<List<Comment>> call = jsonPlaceHolderApi.getComments(postId);
         call.enqueue(new Callback<List<Comment>>() {
             @Override
             public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
                 List<Comment> comments = response.body();
                 String[] commentsList = new String[comments.size()];
-                for(int i = 0; i < commentsList.length; i++)
-                {
+                for (int i = 0; i < commentsList.length; i++) {
                     String content = "";
                     content += "\nEmail: " + comments.get(i).getEmail() + "\n\n";
                     content += "Title: " + comments.get(i).getName() + "\n\n";
@@ -143,6 +157,83 @@ public class PostActivity extends AppCompatActivity {
                         getApplicationContext(),
                         android.R.layout.simple_list_item_1,
                         commentsList
+                ));
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Comment>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                String name = data.getStringExtra("NAME");
+                String email = data.getStringExtra("EMAIL");
+                String title = data.getStringExtra("TITLE");
+                String comment = data.getStringExtra("COMMENT");
+                createComment(1, name, email, title, comment);
+
+            }
+        }
+    }
+
+    private void createComment(int postId, String name, String email, String title, String userComment) {
+        Comment comment = new Comment(postId, name, email, title, userComment);
+        Call<Comment> call = jsonPlaceHolderApi.createComment(comment);
+        call.enqueue(new Callback<Comment>() {
+            @Override
+            public void onResponse(Call<Comment> call, Response<Comment> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Error:", "Creating comment");
+                    return;
+                }
+                Comment postComment = response.body();
+                String content = "";
+                //content += "Code: " + response.code() +"\n";
+                content += "\nEmail: " + postComment.getEmail() + "\n\n";
+                content += "Title: " + postComment.getName() + "\n\n";
+                content += "Comment: " + postComment.getText() + "\n\n";
+
+                getComments(1, content);
+            }
+
+            @Override
+            public void onFailure(Call<Comment> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void getComments(final int postId, final String newComment) {
+        Call<List<Comment>> call = jsonPlaceHolderApi.getComments(postId);
+        call.enqueue(new Callback<List<Comment>>() {
+            @Override
+            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+                List<Comment> comments = response.body();
+                //String[] commentsList = new String[comments.size() + 2];
+                ArrayList<String> commentsList = new ArrayList<String>();
+                Log.e("NEW COMMENT", newComment);
+                commentsList.add(newComment);
+                for (int i = 0; i < comments.size(); i++) {
+                    String content = "";
+                    content += "\nEmail: " + comments.get(i).getEmail() + "\n\n";
+                    content += "Title: " + comments.get(i).getName() + "\n\n";
+                    content += "Comment:" + comments.get(i).getText() + "\n\n";
+                    commentsList.add(content);
+                }
+
+                String[] commentArray = commentsList.toArray(new String[commentsList.size()]);
+
+
+                listView.setAdapter(new ArrayAdapter<String>(
+                        getApplicationContext(),
+                        android.R.layout.simple_list_item_1,
+                        commentArray
                 ));
 
             }

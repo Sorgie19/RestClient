@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Comment {
     private int postId;
-    private int id;
+    private Integer id;
     private String name;
     private String email;
 
@@ -27,5 +27,13 @@ public class Comment {
 
     public String getText() {
         return text;
+    }
+
+    public Comment(int postId, String name, String email, String title,String text) {
+        this.postId = postId;
+        this.name = name;
+        this.email = email;
+        this.text = text;
+        this.name = title;
     }
 }
