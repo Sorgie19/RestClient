@@ -87,6 +87,7 @@ public class PostActivity extends AppCompatActivity {
                 }
 
                 List<Post> posts = response.body();
+                Log.e("POSTID", String.valueOf(posts.get(position).getId()));
                 postId = posts.get(position).getId();
                 String content = "";
                 content += "Post Title: " + posts.get(position).getTitle() + "\n\n";
@@ -144,7 +145,8 @@ public class PostActivity extends AppCompatActivity {
             public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
                 List<Comment> comments = response.body();
                 String[] commentsList = new String[comments.size()];
-                for (int i = 0; i < commentsList.length; i++) {
+                for (int i = 0; i < commentsList.length; i++)
+                {
                     String content = "";
                     content += "\nEmail: " + comments.get(i).getEmail() + "\n\n";
                     content += "Title: " + comments.get(i).getName() + "\n\n";
@@ -176,13 +178,15 @@ public class PostActivity extends AppCompatActivity {
                 String email = data.getStringExtra("EMAIL");
                 String title = data.getStringExtra("TITLE");
                 String comment = data.getStringExtra("COMMENT");
-                createComment(1, name, email, title, comment);
+                Log.e("CREATECOMMENTPOSTID", String.valueOf(postId));
+                createComment(postId, name, email, title, comment);
+
 
             }
         }
     }
 
-    private void createComment(int postId, String name, String email, String title, String userComment) {
+    private void createComment(final int postIdMethod, String name, String email, String title, String userComment) {
         Comment comment = new Comment(postId, name, email, title, userComment);
         Call<Comment> call = jsonPlaceHolderApi.createComment(comment);
         call.enqueue(new Callback<Comment>() {
@@ -199,7 +203,7 @@ public class PostActivity extends AppCompatActivity {
                 content += "Title: " + postComment.getName() + "\n\n";
                 content += "Comment: " + postComment.getText() + "\n\n";
 
-                getComments(1, content);
+                getComments(postIdMethod, content);
             }
 
             @Override
@@ -210,6 +214,7 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void getComments(final int postId, final String newComment) {
+        Log.e("GET COMMENTS POST ID", String.valueOf(postId));
         Call<List<Comment>> call = jsonPlaceHolderApi.getComments(postId);
         call.enqueue(new Callback<List<Comment>>() {
             @Override
@@ -219,7 +224,8 @@ public class PostActivity extends AppCompatActivity {
                 ArrayList<String> commentsList = new ArrayList<String>();
                 Log.e("NEW COMMENT", newComment);
                 commentsList.add(newComment);
-                for (int i = 0; i < comments.size(); i++) {
+                for (int i = 0; i < comments.size(); i++)
+                {
                     String content = "";
                     content += "\nEmail: " + comments.get(i).getEmail() + "\n\n";
                     content += "Title: " + comments.get(i).getName() + "\n\n";

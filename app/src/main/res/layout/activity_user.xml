@@ -64,8 +64,8 @@
 
     <ListView
         android:id="@+id/profilePosts"
-        android:layout_width="397dp"
-        android:layout_height="469dp"
+        android:layout_width="330dp"
+        android:layout_height="440dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
