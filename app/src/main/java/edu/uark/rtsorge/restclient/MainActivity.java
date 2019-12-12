@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -42,10 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
-
-        //getUsername();
-        //getUsers();
-        getPosts();
+        getUsers();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -53,12 +51,13 @@ public class MainActivity extends AppCompatActivity {
 //
                 Intent intent = new Intent(view.getContext(), PostActivity.class);
                 intent.putExtra("POSITION", i);
+                Log.e("POSITION", String.valueOf(i));
                 startActivity(intent);
             }
         });
     }
 
-    private void getPosts()
+    private void getPosts(final HashMap<Integer, String> userHashMap)
     {
         Call<List<Post>> call = jsonPlaceHolderApi.getPosts();
         call.enqueue(new Callback<List<Post>>() {
@@ -71,14 +70,19 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+
+
                 List<Post> posts = response.body();
                 String[] postsList = new String[posts.size()];
                 for(int i = 0; i < postsList.length; i++)
                 {
+                    String userName = null;
+                    if(userHashMap.containsKey(posts.get(i).getUserId()))
+                        userName = userHashMap.get(posts.get(i).getUserId());
                     String content = "";
-                    content += "ID: " + posts.get(i).getId() + "\n";
-                    content += "User ID: " + posts.get(i).getUserId() + "\n";
-                    content += "Title: " + posts.get(i).getTitle();
+                    content += "\nPost ID: " + posts.get(i).getId() + "\n";
+                    content += "UserName: " + userName + "\n";
+                    content += "Title: " + posts.get(i).getTitle() + "\n";
                     postsList[i] = content;
 
                 }
@@ -123,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
+    }*/
 
     private void getUsers()
     {
@@ -131,15 +135,26 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-
+                if (!response.isSuccessful()) {
+                    Log.e("userOnResponse", String.valueOf(response.code()));
+                    return;
+                }
+                
+                List<User> users = response.body();
+                HashMap<Integer, String> map = new HashMap<>();
+                for(User user : users)
+                    map.put(user.getId(), user.getUsername());
+                getPosts(map);
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
+                Log.e("getUsers Main Activity", t.toString());
 
             }
         });
-    }*/
+    }
+
 
 
 

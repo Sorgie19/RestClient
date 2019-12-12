@@ -23,9 +23,7 @@ public class Comment {
         return email;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() {return id;}
 
     public String getText() {
         return text;

@@ -19,8 +19,8 @@ public interface JsonPlaceHolderApi
     //@GET("posts")
     //Call<List<Post>> getPosts(@Query("userId") int userId);
 
-    @GET("posts/{id}/comments")
-    Call<List<Comment>> getComments(@Path("id") int postId);
+    @GET("comments")
+    Call<List<Comment>> getComments(@Query("postId") int postId);
 
 
 

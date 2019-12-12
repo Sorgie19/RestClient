@@ -1,20 +1,19 @@
 package edu.uark.rtsorge.restclient;
 
-import com.google.gson.annotations.SerializedName;
-
 public class User
 {
-    private int userId;
+    private int id;
     private String name;
-    private String email;
-    private String[] address;
-    private double[] geo;
-    @SerializedName("username")
     private String username;
+    private String email;
+    //private String address;
+   // private double geo;
+    //@SerializedName("username")
 
 
-    public int getUserId() {
-        return userId;
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -29,11 +28,11 @@ public class User
         return email;
     }
 
-    public String[] getAddress() {
+    /*public String getAddress() {
         return address;
     }
 
-    public double[] getGeo() {
+    public double getGeo() {
         return geo;
-    }
+    }*/
 }
