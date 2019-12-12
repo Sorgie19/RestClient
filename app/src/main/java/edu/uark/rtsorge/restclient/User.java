@@ -1,38 +1,110 @@
 package edu.uark.rtsorge.restclient;
 
-public class User
-{
-    private int id;
-    private String name;
-    private String username;
-    private String email;
-    //private String address;
-   // private double geo;
-    //@SerializedName("username")
 
+import com.google.gson.annotations.SerializedName;
 
+public class User{
 
-    public int getId() {
-        return id;
-    }
+	@SerializedName("website")
+	private String website;
 
-    public String getName() {
-        return name;
-    }
+	@SerializedName("address")
+	private Address address;
 
-    public String getUsername() {
-        return username;
-    }
+	@SerializedName("phone")
+	private String phone;
 
-    public String getEmail() {
-        return email;
-    }
+	@SerializedName("name")
+	private String name;
 
-    /*public String getAddress() {
-        return address;
-    }
+	@SerializedName("company")
+	private Company company;
 
-    public double getGeo() {
-        return geo;
-    }*/
+	@SerializedName("id")
+	private int id;
+
+	@SerializedName("email")
+	private String email;
+
+	@SerializedName("username")
+	private String username;
+
+	public void setWebsite(String website){
+		this.website = website;
+	}
+
+	public String getWebsite(){
+		return website;
+	}
+
+	public void setAddress(Address address){
+		this.address = address;
+	}
+
+	public Address getAddress(){
+		return address;
+	}
+
+	public void setPhone(String phone){
+		this.phone = phone;
+	}
+
+	public String getPhone(){
+		return phone;
+	}
+
+	public void setName(String name){
+		this.name = name;
+	}
+
+	public String getName(){
+		return name;
+	}
+
+	public void setCompany(Company company){
+		this.company = company;
+	}
+
+	public Company getCompany(){
+		return company;
+	}
+
+	public void setId(int id){
+		this.id = id;
+	}
+
+	public int getId(){
+		return id;
+	}
+
+	public void setEmail(String email){
+		this.email = email;
+	}
+
+	public String getEmail(){
+		return email;
+	}
+
+	public void setUsername(String username){
+		this.username = username;
+	}
+
+	public String getUsername(){
+		return username;
+	}
+
+	@Override
+ 	public String toString(){
+		return 
+			"User{" + 
+			"website = '" + website + '\'' + 
+			",address = '" + address + '\'' + 
+			",phone = '" + phone + '\'' + 
+			",name = '" + name + '\'' + 
+			",company = '" + company + '\'' + 
+			",id = '" + id + '\'' + 
+			",email = '" + email + '\'' + 
+			",username = '" + username + '\'' + 
+			"}";
+		}
 }

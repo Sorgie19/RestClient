@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class PostActivity extends AppCompatActivity {
         textView = findViewById(R.id.actualPost);
         listView = findViewById(R.id.listview2);
         userNameTextView = findViewById(R.id.textView4);
-        int position;
+        final int position;
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://jsonplaceholder.typicode.com/")
@@ -43,6 +45,19 @@ public class PostActivity extends AppCompatActivity {
         position = intent.getExtras().getInt("POSITION");
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
         getPost(position);
+
+        userNameTextView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(PostActivity.this, "Opening profile for " + userNameTextView.getText(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getBaseContext(), UserActivity.class);
+                intent.putExtra("POSITION", position);
+                intent.putExtra("NAME", userNameTextView.getText());
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void getPost(final int position) {
