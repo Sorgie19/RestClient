@@ -1,7 +1,5 @@
 package edu.uark.rtsorge.restclient;
 
-import android.telephony.mbms.StreamingServiceInfo;
-
 import com.google.gson.annotations.SerializedName;
 
 public class Post
@@ -13,9 +11,7 @@ public class Post
     @SerializedName("body")
     private String text;
 
-    public int getUserId() {
-        return userId;
-    }
+    public int getUserId() {return userId;}
 
     public int getId() {
         return id;
