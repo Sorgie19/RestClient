@@ -30,7 +30,6 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
     Button profileMap;
     int p;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -50,7 +49,6 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
                 .build();
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
         getOriginalPost(position,1);
-
     }
 
     void initializeComponents() {
@@ -76,6 +74,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //Opens MapActivity psasing in lat and long coords
     public void openMaps(double latitude, double longitude)
     {
         Intent mapIntent = new Intent(this, MapsActivity.class);
@@ -84,6 +83,10 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(mapIntent);
     }
 
+    //Gets List of posts
+    //Takes code as a parameter
+    //if Code == 1 we get the get userId
+    //if Code == 2 we get the coords from the map from get User
     private void getOriginalPost(final int position, final int code) {
         Call<List<Post>> call = jsonPlaceHolderApi.getPosts();
         call.enqueue(new Callback<List<Post>>() {
@@ -113,6 +116,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    //Gets all the users information to be displayed
     private void getUser(final int userId, final int code) {
         Log.e("During", "get user gets called" + userId);
         Call<List<User>> call = jsonPlaceHolderApi.getUsers();
@@ -173,6 +177,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    //Gets listview of all users posts
     private void getListViewPosts(int userId)
     {
         Call<List<Post>> call = jsonPlaceHolderApi.getPosts(userId);

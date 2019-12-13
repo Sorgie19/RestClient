@@ -2,6 +2,7 @@ package edu.uark.rtsorge.restclient;
 
 import com.google.gson.annotations.SerializedName;
 
+//COMMENT POJO
 public class Comment {
     private int postId;
     private Integer id;

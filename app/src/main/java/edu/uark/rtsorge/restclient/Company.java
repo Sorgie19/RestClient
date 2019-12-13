@@ -3,7 +3,7 @@ package edu.uark.rtsorge.restclient;
 
 import com.google.gson.annotations.SerializedName;
 
-
+//COMPANY POJO (APART OF USER)
 public class Company{
 
 	@SerializedName("bs")

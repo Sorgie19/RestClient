@@ -2,6 +2,7 @@ package edu.uark.rtsorge.restclient;
 
 import com.google.gson.annotations.SerializedName;
 
+//POST POJO
 public class Post
 {
     private int userId;

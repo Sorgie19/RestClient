@@ -2,6 +2,7 @@ package edu.uark.rtsorge.restclient;
 
 import com.google.gson.annotations.SerializedName;
 
+//ADDRESS POJO (APART OF USER)
 public class Address{
 
 	@SerializedName("zipcode")

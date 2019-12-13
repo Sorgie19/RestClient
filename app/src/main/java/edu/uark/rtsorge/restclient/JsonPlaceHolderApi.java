@@ -11,6 +11,8 @@ import retrofit2.http.Query;
 
 public interface JsonPlaceHolderApi
 {
+    //API
+
     @GET("users")
     Call<List<User>> getUsers();
 

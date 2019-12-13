@@ -26,8 +26,9 @@ import retrofit2.http.POST;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView textViewResult;
+    //API
     JsonPlaceHolderApi jsonPlaceHolderApi;
+    //Listview used for posts
     ListView listView;
 
     @Override
@@ -37,14 +38,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.listview);
 
+        //Retrofit init
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://jsonplaceholder.typicode.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+
+
         getUsers();
 
+        //Listview click listener that passes position of clicked item
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -57,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Get request and pulls all the posts
+    //Displays them in a listview with the username
+    //Compares posts userid to the hashmap of userid's and username
     private void getPosts(final HashMap<Integer, String> userHashMap)
     {
         Call<List<Post>> call = jsonPlaceHolderApi.getPosts();
@@ -66,19 +75,21 @@ public class MainActivity extends AppCompatActivity {
             {
                 if(!response.isSuccessful())
                 {
-                    textViewResult.setText("Code: " + response.code());
+                    Log.e("Not successfull", String.valueOf(response.code()));
                     return;
                 }
 
-
-
+                //List of posts
                 List<Post> posts = response.body();
+                //Creating array of posts for listview
                 String[] postsList = new String[posts.size()];
                 for(int i = 0; i < postsList.length; i++)
                 {
+                    //Checks if userid matches hashmap key value paair
                     String userName = null;
                     if(userHashMap.containsKey(posts.get(i).getUserId()))
                         userName = userHashMap.get(posts.get(i).getUserId());
+                    //Constructing string
                     String content = "";
                     content += "\nPost ID: " + posts.get(i).getId() + "\n";
                     content += "UserName: " + userName + "\n";
@@ -87,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
+                //Create listview from array of posts
                 listView.setAdapter(new ArrayAdapter<String>(
                         getApplicationContext(),
                         android.R.layout.simple_list_item_1,
@@ -96,39 +108,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t)
             {
-                textViewResult.setText(t.getMessage());
+                Log.e("onFailure", t.getMessage());
             }
         });
     }
 
-    /*private void getComments(final int test)
-    {
-        Call<List<Comment>> call = jsonPlaceHolderApi.getComments(5);
-        call.enqueue(new Callback<List<Comment>>() {
-            @Override
-            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
-                List<Comment> comments = response.body();
-                for(Comment comment: comments)
-                {
-                    String content = "";
-                    content += "ID: " + comment.getId() + "\n";
-                    content += "Post ID: " + comment.getPostId() + "\n";
-                    content += "Name: " + comment.getName() + "\n";
-                    content += "Email: " + comment.getEmail() + "\n";
-                    content += "Text: " + comment.getText() + "\n\n";
-
-                    textViewResult.append(content);
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Comment>> call, Throwable t) {
-
-            }
-        });
-    }*/
-
+    //Pulls list of users
+    //Creates a hashmap with user id parings and names
+    //Calls getPosts which gets all the posts
+    //Passes the hashmap to display username
     private void getUsers()
     {
         Call<List<User>> call = jsonPlaceHolderApi.getUsers();
@@ -154,8 +142,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
 }

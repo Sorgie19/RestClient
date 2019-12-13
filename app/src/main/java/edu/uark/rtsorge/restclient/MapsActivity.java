@@ -20,6 +20,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double longitude;
     LatLng coords;
 
+    //Receives lat and long from PostActivity
+    //Creates a map and marker at those coords and moves the camera there
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

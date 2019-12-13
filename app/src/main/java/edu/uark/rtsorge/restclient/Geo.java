@@ -3,7 +3,7 @@ package edu.uark.rtsorge.restclient;
 
 import com.google.gson.annotations.SerializedName;
 
-
+//GEO POJO(APART OF USER)
 public class Geo{
 
 	@SerializedName("lng")

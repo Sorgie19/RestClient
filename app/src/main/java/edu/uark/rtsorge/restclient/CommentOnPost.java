@@ -29,6 +29,8 @@ public class CommentOnPost extends AppCompatActivity {
     int position;
     JsonPlaceHolderApi jsonPlaceHolderApi;
 
+    //Used to enter data for the comment.
+    //Then passes it back to previous activity to POST
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,13 +39,6 @@ public class CommentOnPost extends AppCompatActivity {
         Intent thisIntent = getIntent();
         position = thisIntent.getExtras().getInt("POSITION");
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://jsonplaceholder.typicode.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
-
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,6 +46,7 @@ public class CommentOnPost extends AppCompatActivity {
                 String email = emailInput.getText().toString();
                 String title = titleComment.getText().toString();
                 String comment = commentInput.getText().toString();
+                //Requires all fields to not be empty
                 if (name.isEmpty() || email.isEmpty() || title.isEmpty() ||comment.isEmpty()) {
                     Toast.makeText(CommentOnPost.this, "Fill in all fields", Toast.LENGTH_SHORT).show();
                 } else {
@@ -64,8 +60,6 @@ public class CommentOnPost extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     public void initComponents() {
@@ -76,6 +70,4 @@ public class CommentOnPost extends AppCompatActivity {
         buttonSubmit = (Button) findViewById(R.id.buttonSubmit);
         titleComment = (EditText)findViewById(R.id.titeComment);
     }
-
-
 }

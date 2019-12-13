@@ -3,6 +3,7 @@ package edu.uark.rtsorge.restclient;
 
 import com.google.gson.annotations.SerializedName;
 
+//USER POJO
 public class User{
 
 	@SerializedName("website")

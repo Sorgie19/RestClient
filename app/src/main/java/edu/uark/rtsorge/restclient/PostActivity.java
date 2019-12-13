@@ -37,10 +37,7 @@ public class PostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-        textView = findViewById(R.id.actualPost);
-        listView = findViewById(R.id.listview2);
-        userNameTextView = findViewById(R.id.textView4);
-        commentButton = findViewById(R.id.commentButton);
+        initComponents();
         final int position;
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -48,11 +45,15 @@ public class PostActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        //Gets position from clicked item
         Intent intent = getIntent();
         position = intent.getExtras().getInt("POSITION");
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+
+        //
         getPost(position);
 
+        //Textview onclick listener for the clickable username
         userNameTextView.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -66,6 +67,7 @@ public class PostActivity extends AppCompatActivity {
             }
         });
 
+        //Comment button used to create a comment
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,6 +78,18 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
+    private void initComponents()
+    {
+        textView = findViewById(R.id.actualPost);
+        listView = findViewById(R.id.listview2);
+        userNameTextView = findViewById(R.id.textView4);
+        commentButton = findViewById(R.id.commentButton);
+    }
+
+    //Takes position as a pareameter
+    //Gets List of Posts
+    //Sets the current post title and text from selected post
+    //Calls getUser and getComments
     private void getPost(final int position) {
         Call<List<Post>> call = jsonPlaceHolderApi.getPosts();
         call.enqueue(new Callback<List<Post>>() {
@@ -108,6 +122,9 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
+    //Takes the userId as a parameter from getPosts
+    //Matches the userid to a name
+    //Sets the textview for the username
     private void getUser(final int userId) {
         Log.e("During", "get user gets called" + userId);
         Call<List<User>> call = jsonPlaceHolderApi.getUsers();
@@ -138,6 +155,9 @@ public class PostActivity extends AppCompatActivity {
 
     }
 
+    //Takes postID as a parameter from getPosts
+    //Get request all the comments related to that post
+    //Puts them into listview with email, title, comment.
     private void getComments(final int postId) {
         Call<List<Comment>> call = jsonPlaceHolderApi.getComments(postId);
         call.enqueue(new Callback<List<Comment>>() {
@@ -155,6 +175,7 @@ public class PostActivity extends AppCompatActivity {
 
                 }
 
+                //Listview of comments
                 listView.setAdapter(new ArrayAdapter<String>(
                         getApplicationContext(),
                         android.R.layout.simple_list_item_1,
@@ -170,6 +191,8 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
+    //Gets the result from the CommentOnPost activity
+    //Calls createComment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
@@ -186,6 +209,8 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
+    //Creates a comment using POST
+    //Gets postId and posts a new comment to specified post
     private void createComment(final int postIdMethod, String name, String email, String title, String userComment) {
         Comment comment = new Comment(postId, name, email, title, userComment);
         Call<Comment> call = jsonPlaceHolderApi.createComment(comment);
@@ -213,6 +238,7 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
+    //Used to get refreshed list of comments after POST of new comment
     private void getComments(final int postId, final String newComment) {
         Log.e("GET COMMENTS POST ID", String.valueOf(postId));
         Call<List<Comment>> call = jsonPlaceHolderApi.getComments(postId);
